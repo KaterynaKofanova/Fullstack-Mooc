@@ -1,0 +1,19 @@
+title The sequence of events when the user creates a new note on page https://fullstack-exampleapp.herokuapp.com/notes
+
+Browser->Server: HTTP POST https://fullstack-exampleapp.herokuapp.com/new_note
+note over Server:
+The server asks the browser to do 
+a new HTTP GET request to 
+the address defined in the header's Location.
+end note
+Server->Browser: HTTP status code 302
+Browser -> Server: HTTP GET https://fullstack-exampleapp.herokuapp.com/notes
+Server->Browser: HTML-code
+Browser->Server: HTTP GET https://fullstack-exampleapp.herokuapp.com/main.css
+Server->Browser: main.css
+note over Server:
+The server creates a new note object 
+and adds it to an array "notes".
+end note
+Browser->Server: HTTP GET https://fullstack-exampleapp.herokuapp.com/data.json
+Server->Browser: data.js
