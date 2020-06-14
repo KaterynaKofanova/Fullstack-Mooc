@@ -1,0 +1,9 @@
+title The sequence of events when the user goes to the single page app version of the notes app at https://fullstack-exampleapp.herokuapp.com/spa
+Browser->Server: HTTP GET https://fullstack-exampleapp.herokuapp.com/spa
+Server->Browser: HTML-code
+Browser->Server: HTTP GET https://fullstack-exampleapp.herokuapp.com/main.css
+Server->Browser: main.css
+Browser->Server: HTTP GET https://fullstack-exampleapp.herokuapp.com/spa.js
+Server->Browser: spa.js
+Browser->Server: https://fullstack-exampleapp.herokuapp.com/data.json
+Server->Browser: [{ content: "HTML is easy", date: "2019-05-23" }, ...]

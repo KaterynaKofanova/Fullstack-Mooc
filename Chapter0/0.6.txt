@@ -1,0 +1,13 @@
+title The sequence of events when the user creates a new note using the single page version of the app at https://fullstack-exampleapp.herokuapp.com/spa
+Browser->Server: HTTP POST https://fullstack-exampleapp.herokuapp.com/new_note_spa
+note over Browser:
+POST request contains the new note as JSON-data
+end note
+note over Server:
+The server creates a new note object
+end note
+Server->Browser: HTTP status code 201 created
+note over Browser:
+The browser stays on the same page, 
+and it sends no further HTTP requests.
+end note
