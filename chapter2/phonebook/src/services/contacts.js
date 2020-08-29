@@ -16,14 +16,13 @@ const addNew=newContact=>{
     )
 }
 /*Deleting contact*/
-const delCont = id => {
+const delCont = (id) => {
     const request = axios.delete(`${baseUrl}/${id}`)
     return request.then(response=>response.data)
 }
 /*Changing number of existing contact*/
 const changeCont = (id, contact) =>{
-    const request = axios.put(`${baseUrl}/${id}`, contact)
-    return request.then(response=>response.data)
+    return axios.put(`${baseUrl}/${id}`, contact)
 }
 export default {
     getAll,
