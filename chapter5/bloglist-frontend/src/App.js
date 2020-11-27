@@ -4,6 +4,7 @@ import Message from './components/Message'
 import blogService from './services/blogs'
 import loginService from './services/login' 
 import './App.css'
+import BlogForm from './components/BlogForm'
 
 const App = () => {
   const [blogs, setBlogs] = useState([])
@@ -12,9 +13,6 @@ const App = () => {
   const [user, setUser] = useState(null)
   const [errorMessage, setErrorMessage] = useState(null)
   const [errorType, setErrorType] = useState('')
-  const [title, setTitle] = useState('')
-  const [author, setAuthor] = useState('')
-  const [url, setUrl] = useState('')
 
   useEffect(() => {
     blogService.getAll().then(blogs =>
@@ -62,28 +60,22 @@ const App = () => {
     }
   }
 
-  const handleBlogAdd = async (event) => {
-    event.preventDefault()
-    const blogObject = {
-      title: title,
-      author: author,
-      url: url
-    }
-    const newBlog = await blogService.create(blogObject)
-    setBlogs(blogs.concat(newBlog))
-    setTitle('')
-    setAuthor('')
-    setUrl('')
-    setErrorMessage(`a new blog ${newBlog.title} is added!`)
-    setErrorType('green')
-  }
-
   const handleLogOut = (event) => {
     event.preventDefault()
     window.localStorage.removeItem('loggedUser')
     setUser(null)
   }
 
+  const addBlog = async (blogObject) => {
+    const newBlog = await blogService.create(blogObject)
+    setBlogs(blogs.concat(newBlog))
+    setErrorMessage(`a new blog ${newBlog.title} is added!`)
+    setErrorType('green')
+    setTimeout(() => {
+      setErrorMessage(null)
+      setErrorType('')
+    }, 5000)
+  }
 //Forms
   const loginForm = () => (
     <form onSubmit={handleLogin}>
@@ -109,38 +101,7 @@ const App = () => {
     </form>      
   )
 
-  const blogForm = () => (
-    <form onSubmit={handleBlogAdd}>
-      <div>
-        title:
-          <input 
-            type='text'
-            value={title}
-            name='title'
-            onChange={({target}) => setTitle(target.value)} 
-          />
-      </div>
-      <div>
-        author:
-          <input 
-            type='text'
-            value={author}
-            name='author'
-            onChange={({target}) => setAuthor(target.value)} 
-          />
-      </div>
-      <div>
-        url:
-          <input 
-            type='text'
-            value={url}
-            name='url'
-            onChange={({target}) => setUrl(target.value)} 
-          />
-      </div>
-      <button type="submit">add</button>
-    </form>
-  )
+  
 
   return (
     <div>
@@ -154,7 +115,7 @@ const App = () => {
             <Blog key={blog.id} blog={blog} />
           )}
           <p>Add a new blog:</p>
-          {blogForm()}
+          {<BlogForm addBlog={addBlog}/>}
         </div>
       }
       
