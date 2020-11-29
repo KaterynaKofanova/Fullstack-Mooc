@@ -16,7 +16,8 @@ const App = () => {
 
   useEffect(() => {
     blogService.getAll().then(blogs =>
-      setBlogs( blogs )
+      setBlogs( blogs.sort((a, b) => b.likes - a.likes ))
+
     )  
   }, [])
 
@@ -76,6 +77,17 @@ const App = () => {
       setErrorType('')
     }, 5000)
   }
+
+  const addLike = async(id, blogObject) => {
+    const changedBlog = await blogService.change(id, blogObject)
+    setBlogs(blogs.map(blog => blog.id!== changedBlog.id ? blog : changedBlog))
+  }
+
+  const deleteBlog = async(id) => {
+    await blogService.del(id)
+    setBlogs(blogs.filter(blog => blog.id!== id))
+  }
+
 //Forms
   const loginForm = () => (
     <form onSubmit={handleLogin}>
@@ -112,10 +124,10 @@ const App = () => {
         <div>
           <p>{user.name} logged in <button onClick={handleLogOut}>log out</button></p>
           {blogs.map(blog =>
-            <Blog key={blog.id} blog={blog} />
+            <Blog key={blog.id} blog={blog} addLike={addLike} user={user} deleteBlog={deleteBlog}/>
           )}
           <p>Add a new blog:</p>
-          {<BlogForm addBlog={addBlog}/>}
+          {<BlogForm addBlog={addBlog} />}
         </div>
       }
       
