@@ -35,4 +35,4 @@ const del = async id => {
   return response.data
 }
 
-export default { getAll, create, setToken, change, del}
+export default { getAll, create, setToken, change, del }

@@ -1,4 +1,4 @@
-import React, { useState} from 'react'
+import React, { useState } from 'react'
 
 const Blog = ({ blog, addLike, deleteBlog, user }) => {
   const [fullView, setFullView] = useState(false)
@@ -10,6 +10,10 @@ const Blog = ({ blog, addLike, deleteBlog, user }) => {
     border: 'solid',
     borderWidth: 1,
     marginBottom: 5
+  }
+
+  const delButtonStyle = {
+    background: 'lightblue'
   }
 
   const handleLikeAdd = async (event) => {
@@ -35,28 +39,28 @@ const Blog = ({ blog, addLike, deleteBlog, user }) => {
     if(user.username === blog.user.username){
       return(
         <div style={blogStyle}>
-          <div>{blog.title} {blog.author} <button onClick={()=>setFullView(false)}>hide</button></div>
+          <div>{blog.title} {blog.author} <button onClick={() => setFullView(false)}>hide</button></div>
           <div>{blog.url}</div>
           <div>likes: {likes} <button onClick={handleLikeAdd}>like</button></div>
-          <div>added by user: {blog.user.name}</div>
-          <div><button onClick={handleDelete}>delete</button></div>
+          <div>{blog.user.name}</div>
+          <div><button onClick={handleDelete} style={delButtonStyle} >delete</button></div>
         </div>
       )
     }else{
       return(
         <div style={blogStyle}>
-          <div>{blog.title} {blog.author} <button onClick={()=>setFullView(false)}>hide</button></div>
+          <div>{blog.title} {blog.author} <button onClick={() => setFullView(false)}>hide</button></div>
           <div>{blog.url}</div>
           <div>likes: {likes} <button onClick={handleLikeAdd}>like</button></div>
-          <div>added by user: {blog.user.name}</div>
+          <div>{blog.user.name}</div>
         </div>
       )
     }
   }else{
     return(
-  <div style={blogStyle}>
-    {blog.title} {blog.author} <button  onClick={()=>setFullView(true)}>view</button>
-  </div>)
+      <div style={blogStyle}>
+        {blog.title} {blog.author} <button  onClick={() => setFullView(true)}>view</button>
+      </div>)
   }
 }
 

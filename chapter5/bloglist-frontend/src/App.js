@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react'
 import Blog from './components/Blog'
 import Message from './components/Message'
 import blogService from './services/blogs'
-import loginService from './services/login' 
+import loginService from './services/login'
 import './App.css'
 import BlogForm from './components/BlogForm'
 
@@ -15,28 +15,27 @@ const App = () => {
   const [errorType, setErrorType] = useState('')
 
   useEffect(() => {
-    blogService.getAll().then(blogs =>
-      setBlogs( blogs.sort((a, b) => b.likes - a.likes ))
-
-    )  
+    blogService
+      .getAll()
+      .then((blogs) => setBlogs(blogs.sort((a, b) => b.likes - a.likes)))
   }, [])
 
   useEffect(() => {
     const loggedUserJSON = window.localStorage.getItem('loggedUser')
-    if(loggedUserJSON){
+    if (loggedUserJSON) {
       const user = JSON.parse(loggedUserJSON)
       setUser(user)
       blogService.setToken(user.token)
     }
+  }, [])
 
-  },[])
-
-//Handling of forms
+  //Handling of forms
   const handleLogin = async (event) => {
     event.preventDefault()
-    try{
+    try {
       const user = await loginService.login({
-        username, password
+        username,
+        password,
       })
       window.localStorage.setItem('loggedUser', JSON.stringify(user))
       blogService.setToken(user.token)
@@ -49,15 +48,13 @@ const App = () => {
         setErrorMessage(null)
         setErrorType('')
       }, 5000)
-    }
-    catch (exception) {
+    } catch (exception) {
       setErrorMessage('wrong credentials')
       setErrorType('red')
       setTimeout(() => {
         setErrorMessage(null)
         setErrorType('')
       }, 5000)
-
     }
   }
 
@@ -78,22 +75,24 @@ const App = () => {
     }, 5000)
   }
 
-  const addLike = async(id, blogObject) => {
+  const addLike = async (id, blogObject) => {
     const changedBlog = await blogService.change(id, blogObject)
-    setBlogs(blogs.map(blog => blog.id!== changedBlog.id ? blog : changedBlog))
+    setBlogs(
+      blogs.map((blog) => (blog.id !== changedBlog.id ? blog : changedBlog))
+    )
   }
 
-  const deleteBlog = async(id) => {
+  const deleteBlog = async (id) => {
     await blogService.del(id)
-    setBlogs(blogs.filter(blog => blog.id!== id))
+    setBlogs(blogs.filter((blog) => blog.id !== id))
   }
 
-//Forms
+  //Forms
   const loginForm = () => (
     <form onSubmit={handleLogin}>
       <div>
         username
-          <input
+        <input
           type="text"
           value={username}
           name="Username"
@@ -102,7 +101,7 @@ const App = () => {
       </div>
       <div>
         password
-          <input
+        <input
           type="password"
           value={password}
           name="Password"
@@ -110,27 +109,33 @@ const App = () => {
         />
       </div>
       <button type="submit">login</button>
-    </form>      
+    </form>
   )
-
-  
 
   return (
     <div>
       <h2>blogs</h2>
       <Message text={errorMessage} type={errorType} />
-      {user === null ? 
-        loginForm() : 
+      {user === null ?
+        loginForm() :
         <div>
-          <p>{user.name} logged in <button onClick={handleLogOut}>log out</button></p>
-          {blogs.map(blog =>
-            <Blog key={blog.id} blog={blog} addLike={addLike} user={user} deleteBlog={deleteBlog}/>
-          )}
+          <p>
+            {user.name} logged in <button onClick={handleLogOut}>log out</button>
+          </p>
+          {blogs.map((blog) => (
+            <Blog
+              key={blog.id}
+              blog={blog}
+              addLike={addLike}
+              user={user}
+              deleteBlog={deleteBlog}
+            />
+          ))}
           <p>Add a new blog:</p>
           {<BlogForm addBlog={addBlog} />}
         </div>
       }
-      
+
     </div>
   )
 }
