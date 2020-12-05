@@ -55,7 +55,7 @@ const BlogForm = ({ addBlog }) => {
           />
         </div>
         <div>
-          <button type="submit">add</button>
+          <button id='buttonAddBlog' type="submit">add</button>
         </div>
         <div>
           <button onClick={() => setBlogFormVisible(false)}>cancel</button>

@@ -59,7 +59,7 @@ const Blog = ({ blog, addLike, deleteBlog, user }) => {
   }else{
     return(
       <div style={blogStyle}>
-        {blog.title} {blog.author} <button  onClick={() => setFullView(true)}>view</button>
+        {blog.title} {blog.author} <button className='buttonView' onClick={() => setFullView(true)}>view</button>
       </div>)
   }
 }
