@@ -35,11 +35,11 @@ export const createAnecdote = (content) => {
   }
 }
 
-const anecdoteReducer = (state = initialState, action) => {
+const anecdoteReducer = (state = [], action) => {
   switch(action.type) {
     case 'NEW_ANECDOTE':
-      return [...state, asObject(action.data)]
-    case 'VOTE':
+      return [...state, action.data]
+    case 'VOTE': {
       const id = action.data.id
       const anecdoteToChange = state.find(a => a.id === id)
       const changedAnecdote = { 
@@ -49,8 +49,18 @@ const anecdoteReducer = (state = initialState, action) => {
       return state.map(a =>
         a.id !== id ? a : changedAnecdote
       )
+    }
+    case 'INIT_ANECDOTES':
+      return action.data
     default:
       return state
+  }
+}
+
+export const initializeAnecdotes = (anecdotes) => {
+  return {
+    type: 'INIT_ANECDOTES',
+    data: anecdotes,
   }
 }
 
