@@ -1,4 +1,9 @@
 import React, { useState, useEffect } from 'react'
+import { useSelector, useDispatch } from 'react-redux'
+import {addMessage, removeMessage} from './reducers/messageReducer'
+import {initializeBlogs, addNewBlog, like, removeBlog} from './reducers/blogReducer'
+import {saveUser, logout} from './reducers/userReducer'
+
 import Blog from './components/Blog'
 import Message from './components/Message'
 import blogService from './services/blogs'
@@ -7,27 +12,27 @@ import './App.css'
 import BlogForm from './components/BlogForm'
 
 const App = () => {
-  const [blogs, setBlogs] = useState([])
+  const dispatch = useDispatch()
+
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
-  const [user, setUser] = useState(null)
-  const [errorMessage, setErrorMessage] = useState(null)
-  const [errorType, setErrorType] = useState('')
+  const errorMessage = useSelector(state => state.message)
 
   useEffect(() => {
-    blogService
-      .getAll()
-      .then((blogs) => setBlogs(blogs.sort((a, b) => b.likes - a.likes)))
-  }, [])
+    dispatch(initializeBlogs())
+  }, [dispatch])
+
+  const blogs = useSelector(state => state.blogs.sort((a, b) => b.likes - a.likes))
 
   useEffect(() => {
     const loggedUserJSON = window.localStorage.getItem('loggedUser')
     if (loggedUserJSON) {
       const user = JSON.parse(loggedUserJSON)
-      setUser(user)
+      dispatch(saveUser(user))
       blogService.setToken(user.token)
     }
   }, [])
+  const user = useSelector(state => state.user)
 
   //Handling of forms
   const handleLogin = async (event) => {
@@ -39,21 +44,17 @@ const App = () => {
       })
       window.localStorage.setItem('loggedUser', JSON.stringify(user))
       blogService.setToken(user.token)
-      setUser(user)
+      dispatch(saveUser(user))
       setUsername('')
       setPassword('')
-      setErrorMessage(`${user.name} logged in succesfully!`)
-      setErrorType('green')
+      dispatch(addMessage(`${user.name} logged in succesfully!`,'green'))
       setTimeout(() => {
-        setErrorMessage(null)
-        setErrorType('')
+        dispatch(removeMessage())
       }, 5000)
     } catch (exception) {
-      setErrorMessage('wrong credentials')
-      setErrorType('red')
+      dispatch(addMessage('wrong credentials', 'red'))
       setTimeout(() => {
-        setErrorMessage(null)
-        setErrorType('')
+        dispatch(removeMessage())
       }, 5000)
     }
   }
@@ -61,30 +62,23 @@ const App = () => {
   const handleLogOut = (event) => {
     event.preventDefault()
     window.localStorage.removeItem('loggedUser')
-    setUser(null)
+    dispatch(logout())
   }
 
   const addBlog = async (blogObject) => {
-    const newBlog = await blogService.create(blogObject)
-    setBlogs(blogs.concat(newBlog))
-    setErrorMessage(`a new blog ${newBlog.title} is added!`)
-    setErrorType('green')
+    dispatch(addNewBlog(blogObject))
+    dispatch(addMessage(`a new blog ${blogObject.title} is added!`, 'green'))
     setTimeout(() => {
-      setErrorMessage(null)
-      setErrorType('')
+      dispatch(removeMessage())
     }, 5000)
   }
 
   const addLike = async (id, blogObject) => {
-    const changedBlog = await blogService.change(id, blogObject)
-    setBlogs(
-      blogs.map((blog) => (blog.id !== changedBlog.id ? blog : changedBlog))
-    )
+    dispatch(like(id, blogObject))
   }
 
   const deleteBlog = async (id) => {
-    await blogService.del(id)
-    setBlogs(blogs.filter((blog) => blog.id !== id))
+    dispatch(removeBlog(id))
   }
 
   //Forms
@@ -117,7 +111,7 @@ const App = () => {
   return (
     <div>
       <h2>blogs</h2>
-      <Message text={errorMessage} type={errorType} />
+      <Message text={errorMessage.message} type={errorMessage.errorType} />
       {user === null ?
         loginForm() :
         <div>
