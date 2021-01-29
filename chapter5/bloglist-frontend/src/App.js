@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import {addMessage, removeMessage} from './reducers/messageReducer'
-import {initializeBlogs, addNewBlog, like, removeBlog} from './reducers/blogReducer'
+import {initializeBlogs, addNewBlog, like, removeBlog, commentBlog} from './reducers/blogReducer'
 import {saveUser, logout} from './reducers/userReducer'
 import {initUsersList} from './reducers/usersListReducer'
 
@@ -89,6 +89,10 @@ const App = () => {
     dispatch(removeBlog(id))
   }
 
+  const addComment = async(id, comment) => {
+    dispatch(commentBlog(id, comment))
+  }
+
   //Forms
   const loginForm = () => (
     <form onSubmit={handleLogin}>
@@ -127,16 +131,16 @@ const App = () => {
   return (
     <Router>
     <div className='container'>
-    <h2>blogs</h2>
-          <Message text={errorMessage.message} type={errorMessage.errorType} />
-          {user === null ?
-            loginForm() :
-            <div>
-              <p>
+      <div>
+        <Link to='/'>blogs</Link>
+        <Link to='/users'>users</Link>
+        {user ? <em>
                 {user.name} logged in <button onClick={handleLogOut}>log out</button>
-              </p>
-            </div>
-          }
+              </em> : null }
+      </div>
+    <h2>Blog App</h2>
+          <Message text={errorMessage.message} type={errorMessage.errorType} />
+          {user === null ? loginForm() : null}
       <Switch>
         <Route path='/users/:id'>
           <UserInfo users={usersList}/>
@@ -150,6 +154,7 @@ const App = () => {
             addLike={addLike}
             user={user}
             deleteBlog={deleteBlog}
+            addComment={addComment}
           />
         </Route>
         <Route path='/'>

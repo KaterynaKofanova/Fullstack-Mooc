@@ -1,15 +1,10 @@
 import React, { useState } from 'react'
 import {useParams} from 'react-router-dom'
 
-const Blog = ({ blogs, addLike, deleteBlog, user }) => {
+const Blog = ({ blogs, addLike, deleteBlog, user, addComment }) => {
   const id = useParams().id
-  console.log('id is', id)
   const blog = blogs.find(blog => blog.id === id)
-  console.log('blogs is', blogs)
-  // const [fullView, setFullView] = useState(false)
-  // const [likes, setLikes] = useState(blog.likes)
-
-  
+  const [comment, setComment] = useState('')
 
   const delButtonStyle = {
     background: 'lightblue'
@@ -26,7 +21,6 @@ const Blog = ({ blogs, addLike, deleteBlog, user }) => {
       user: blog.user.id
     }
     addLike(blog.id, blogObject)
-    // setLikes(newLikes)
   }
 
   const handleDelete = async (event) => {
@@ -34,29 +28,32 @@ const Blog = ({ blogs, addLike, deleteBlog, user }) => {
     deleteBlog(blog.id)
   }
 
+  const handleCommentAdd = async(event) => {
+    event.preventDefault()
+    addComment(blog.id, comment)
+    setComment('')
+  }
+
   if(!blog){
     return null
   }
-    if(user.username === blog.user.username){
       return(
         <div>
           <h3>{blog.title} {blog.author}</h3>
           <a href={blog.url}>{blog.url}</a>
           <div>likes: {blog.likes} <button onClick={handleLikeAdd}>like</button></div>
           <div>added by {blog.user.name}</div>
-          <div><button onClick={handleDelete} style={delButtonStyle} >delete</button></div>
+          {user.username === blog.user.username ? <div><button onClick={handleDelete} style={delButtonStyle} >delete</button></div> : null}
+          <h3>comments:</h3>
+          <form onSubmit={handleCommentAdd}>
+            <input id='comment' onChange={({ target }) => setComment(target.value)}/>
+            <button type='submit'>add comment</button>
+          </form>
+          <ul>
+            {blog.comments.map(c => <li key={c}>{c}</li>)}
+          </ul>
         </div>
       )
-    }else{
-      return(
-        <div>
-          <h3>{blog.title} {blog.author}</h3>
-          <a href={blog.url}>{blog.url}</a>
-          <div>likes: {blog.likes} <button onClick={handleLikeAdd}>like</button></div>
-          <div>added by {blog.user.name}</div>
-        </div>
-      )
-    }
 }
 
 export default Blog
