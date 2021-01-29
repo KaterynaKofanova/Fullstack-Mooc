@@ -3,6 +3,9 @@ import { useSelector, useDispatch } from 'react-redux'
 import {addMessage, removeMessage} from './reducers/messageReducer'
 import {initializeBlogs, addNewBlog, like, removeBlog} from './reducers/blogReducer'
 import {saveUser, logout} from './reducers/userReducer'
+import {initUsersList} from './reducers/usersListReducer'
+
+import {BrowserRouter as Router, Switch, Route, Link} from "react-router-dom"
 
 import Blog from './components/Blog'
 import Message from './components/Message'
@@ -10,6 +13,8 @@ import blogService from './services/blogs'
 import loginService from './services/login'
 import './App.css'
 import BlogForm from './components/BlogForm'
+import UsersList from './components/UsersList'
+import UserInfo from './components/UserInfo'
 
 const App = () => {
   const dispatch = useDispatch()
@@ -20,9 +25,12 @@ const App = () => {
 
   useEffect(() => {
     dispatch(initializeBlogs())
+    dispatch(initUsersList())
   }, [dispatch])
 
   const blogs = useSelector(state => state.blogs.sort((a, b) => b.likes - a.likes))
+  const usersList = useSelector(state => state.usersList)
+  console.log('blogs is', blogs)
 
   useEffect(() => {
     const loggedUserJSON = window.localStorage.getItem('loggedUser')
@@ -31,7 +39,7 @@ const App = () => {
       dispatch(saveUser(user))
       blogService.setToken(user.token)
     }
-  }, [])
+  }, [dispatch])
   const user = useSelector(state => state.user)
 
   //Handling of forms
@@ -108,31 +116,58 @@ const App = () => {
     </form>
   )
 
-  return (
-    <div>
-      <h2>blogs</h2>
-      <Message text={errorMessage.message} type={errorMessage.errorType} />
-      {user === null ?
-        loginForm() :
-        <div>
-          <p>
-            {user.name} logged in <button onClick={handleLogOut}>log out</button>
-          </p>
-          {blogs.map((blog) => (
-            <Blog
-              key={blog.id}
-              blog={blog}
-              addLike={addLike}
-              user={user}
-              deleteBlog={deleteBlog}
-            />
-          ))}
-          <p>Add a new blog:</p>
-          {<BlogForm addBlog={addBlog} />}
-        </div>
-      }
+  const blogStyle = {
+    paddingTop: 10,
+    paddingLeft: 2,
+    border: 'solid',
+    borderWidth: 1,
+    marginBottom: 5
+  }
 
+  return (
+    <Router>
+    <div className='container'>
+    <h2>blogs</h2>
+          <Message text={errorMessage.message} type={errorMessage.errorType} />
+          {user === null ?
+            loginForm() :
+            <div>
+              <p>
+                {user.name} logged in <button onClick={handleLogOut}>log out</button>
+              </p>
+            </div>
+          }
+      <Switch>
+        <Route path='/users/:id'>
+          <UserInfo users={usersList}/>
+        </Route>
+        <Route path='/users'>
+          <UsersList users={usersList}/>
+        </Route>
+        <Route path='/blogs/:id'>
+          <Blog
+            blogs={blogs}
+            addLike={addLike}
+            user={user}
+            deleteBlog={deleteBlog}
+          />
+        </Route>
+        <Route path='/'>
+            <ul style={blogStyle}>
+              {blogs.map((blog) => (
+                <li key={blog.id}>
+                <Link to={`/blogs/${blog.id}`}>
+                  {blog.title}
+                </Link>
+                </li>
+              ))}
+              <p>Add a new blog:</p>
+              {<BlogForm addBlog={addBlog} />}
+            </ul>
+        </Route>
+      </Switch>
     </div>
+    </Router>
   )
 }
 

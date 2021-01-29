@@ -1,16 +1,15 @@
 import React, { useState } from 'react'
+import {useParams} from 'react-router-dom'
 
-const Blog = ({ blog, addLike, deleteBlog, user }) => {
-  const [fullView, setFullView] = useState(false)
-  const [likes, setLikes] = useState(blog.likes)
+const Blog = ({ blogs, addLike, deleteBlog, user }) => {
+  const id = useParams().id
+  console.log('id is', id)
+  const blog = blogs.find(blog => blog.id === id)
+  console.log('blogs is', blogs)
+  // const [fullView, setFullView] = useState(false)
+  // const [likes, setLikes] = useState(blog.likes)
 
-  const blogStyle = {
-    paddingTop: 10,
-    paddingLeft: 2,
-    border: 'solid',
-    borderWidth: 1,
-    marginBottom: 5
-  }
+  
 
   const delButtonStyle = {
     background: 'lightblue'
@@ -27,7 +26,7 @@ const Blog = ({ blog, addLike, deleteBlog, user }) => {
       user: blog.user.id
     }
     addLike(blog.id, blogObject)
-    setLikes(newLikes)
+    // setLikes(newLikes)
   }
 
   const handleDelete = async (event) => {
@@ -35,33 +34,29 @@ const Blog = ({ blog, addLike, deleteBlog, user }) => {
     deleteBlog(blog.id)
   }
 
-  if (fullView){
+  if(!blog){
+    return null
+  }
     if(user.username === blog.user.username){
       return(
-        <div style={blogStyle}>
-          <div>{blog.title} {blog.author} <button onClick={() => setFullView(false)}>hide</button></div>
-          <div>{blog.url}</div>
-          <div>likes: {likes} <button onClick={handleLikeAdd}>like</button></div>
-          <div>{blog.user.name}</div>
+        <div>
+          <h3>{blog.title} {blog.author}</h3>
+          <a href={blog.url}>{blog.url}</a>
+          <div>likes: {blog.likes} <button onClick={handleLikeAdd}>like</button></div>
+          <div>added by {blog.user.name}</div>
           <div><button onClick={handleDelete} style={delButtonStyle} >delete</button></div>
         </div>
       )
     }else{
       return(
-        <div style={blogStyle}>
-          <div>{blog.title} {blog.author} <button onClick={() => setFullView(false)}>hide</button></div>
-          <div>{blog.url}</div>
-          <div>likes: {likes} <button onClick={handleLikeAdd}>like</button></div>
-          <div>{blog.user.name}</div>
+        <div>
+          <h3>{blog.title} {blog.author}</h3>
+          <a href={blog.url}>{blog.url}</a>
+          <div>likes: {blog.likes} <button onClick={handleLikeAdd}>like</button></div>
+          <div>added by {blog.user.name}</div>
         </div>
       )
     }
-  }else{
-    return(
-      <div style={blogStyle}>
-        {blog.title} {blog.author} <button className='buttonView' onClick={() => setFullView(true)}>view</button>
-      </div>)
-  }
 }
 
 export default Blog
