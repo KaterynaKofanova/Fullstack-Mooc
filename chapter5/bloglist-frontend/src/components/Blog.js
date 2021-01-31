@@ -1,14 +1,11 @@
 import React, { useState } from 'react'
 import {useParams} from 'react-router-dom'
+import {Button} from 'react-bootstrap'
 
 const Blog = ({ blogs, addLike, deleteBlog, user, addComment }) => {
   const id = useParams().id
   const blog = blogs.find(blog => blog.id === id)
   const [comment, setComment] = useState('')
-
-  const delButtonStyle = {
-    background: 'lightblue'
-  }
 
   const handleLikeAdd = async (event) => {
     event.preventDefault()
@@ -41,13 +38,13 @@ const Blog = ({ blogs, addLike, deleteBlog, user, addComment }) => {
         <div>
           <h3>{blog.title} {blog.author}</h3>
           <a href={blog.url}>{blog.url}</a>
-          <div>likes: {blog.likes} <button onClick={handleLikeAdd}>like</button></div>
-          <div>added by {blog.user.name}</div>
-          {user.username === blog.user.username ? <div><button onClick={handleDelete} style={delButtonStyle} >delete</button></div> : null}
-          <h3>comments:</h3>
+          <div>Likes: {blog.likes} <Button variant="success" onClick={handleLikeAdd}>like</Button></div>
+          <div>Added by {blog.user.name}</div>
+          {user && user.username === blog.user.username ? <div><Button onClick={handleDelete} variant="danger">delete</Button></div> : null}
+          <h3>Comments:</h3>
           <form onSubmit={handleCommentAdd}>
             <input id='comment' onChange={({ target }) => setComment(target.value)}/>
-            <button type='submit'>add comment</button>
+            <Button variant="dark" type='submit'>add comment</Button>
           </form>
           <ul>
             {blog.comments.map(c => <li key={c}>{c}</li>)}

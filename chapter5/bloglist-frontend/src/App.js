@@ -16,6 +16,8 @@ import BlogForm from './components/BlogForm'
 import UsersList from './components/UsersList'
 import UserInfo from './components/UserInfo'
 
+import {Navbar, Nav, Button } from 'react-bootstrap'
+
 const App = () => {
   const dispatch = useDispatch()
 
@@ -30,7 +32,6 @@ const App = () => {
 
   const blogs = useSelector(state => state.blogs.sort((a, b) => b.likes - a.likes))
   const usersList = useSelector(state => state.usersList)
-  console.log('blogs is', blogs)
 
   useEffect(() => {
     const loggedUserJSON = window.localStorage.getItem('loggedUser')
@@ -116,29 +117,29 @@ const App = () => {
           onChange={({ target }) => setPassword(target.value)}
         />
       </div>
-      <button id="buttonLogin" type="submit">login</button>
+      <Button variant="dark" id="buttonLogin" type="submit">login</Button>
     </form>
   )
-
-  const blogStyle = {
-    paddingTop: 10,
-    paddingLeft: 2,
-    border: 'solid',
-    borderWidth: 1,
-    marginBottom: 5
-  }
 
   return (
     <Router>
     <div className='container'>
-      <div>
-        <Link to='/'>blogs</Link>
-        <Link to='/users'>users</Link>
-        {user ? <em>
-                {user.name} logged in <button onClick={handleLogOut}>log out</button>
-              </em> : null }
-      </div>
-    <h2>Blog App</h2>
+      <Navbar bg="dark" variant="dark" expand="lg" sticky='top'>
+        <Navbar.Toggle aria-controls="basic-navbar-nav" />
+        <Navbar.Collapse id="basic-navbar-nav" >
+          <Nav style={{fontWeight:"bold"}}>
+            <Nav.Link href='/' style={{ textAlign: "center" }}>Blogs</Nav.Link>
+            <Nav.Link href='/users'>Users</Nav.Link>
+          </Nav>
+          <Nav className="ml-auto">
+          {user ? <Navbar.Text style={{fontWeight:"bold", color:"white"}}>
+                {user.name} logged in <Button onClick={handleLogOut} variant="light">log out</Button>
+                </Navbar.Text> : <Navbar.Text></Navbar.Text> }
+
+          </Nav>
+        </Navbar.Collapse>
+      </Navbar>
+    <h1>Blog App</h1>
           <Message text={errorMessage.message} type={errorMessage.errorType} />
           {user === null ? loginForm() : null}
       <Switch>
@@ -158,7 +159,8 @@ const App = () => {
           />
         </Route>
         <Route path='/'>
-            <ul style={blogStyle}>
+            <h2>Blogs:</h2>
+            <ul>
               {blogs.map((blog) => (
                 <li key={blog.id}>
                 <Link to={`/blogs/${blog.id}`}>
@@ -166,9 +168,9 @@ const App = () => {
                 </Link>
                 </li>
               ))}
-              <p>Add a new blog:</p>
-              {<BlogForm addBlog={addBlog} />}
             </ul>
+            <p>Add a new blog:</p>
+            {<BlogForm addBlog={addBlog} />}
         </Route>
       </Switch>
     </div>

@@ -1,5 +1,6 @@
 import React, { useState } from 'react'
 import PropTypes from 'prop-types'
+import {Button} from 'react-bootstrap'
 
 const BlogForm = ({ addBlog }) => {
   const [title, setTitle] = useState('')
@@ -55,16 +56,16 @@ const BlogForm = ({ addBlog }) => {
           />
         </div>
         <div>
-          <button id='buttonAddBlog' type="submit">add</button>
+          <Button variant="dark" id='buttonAddBlog' type="submit">add</Button>
         </div>
         <div>
-          <button onClick={() => setBlogFormVisible(false)}>cancel</button>
+          <Button variant="secondary" onClick={() => setBlogFormVisible(false)}>cancel</Button>
         </div>
       </form>
     )
   } else {
     return (
-      <button onClick={() => setBlogFormVisible(true)}>Add new blog</button>
+      <Button variant="dark" onClick={() => setBlogFormVisible(true)}>Add new blog</Button>
     )
   }
 }

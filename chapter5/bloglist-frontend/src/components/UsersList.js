@@ -5,12 +5,12 @@ import {Link} from 'react-router-dom'
 const UsersList = ({users}) => {
     return(
     <div>
-        <h2>Users</h2>
+        <h2>Users:</h2>
         <Table borderless size="sm">
             <thead>
                 <tr>
-                <th></th>
-                <th>blogs created</th>
+                <th>User</th>
+                <th>Blogs created</th>
                 </tr>
             </thead>
             <tbody>
