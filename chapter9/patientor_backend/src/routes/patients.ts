@@ -12,8 +12,9 @@ router.get('/:id', (req, res) => {
   const patient = patientService.getPatientById(req.params.id);
   if(patient){
     res.send(patient);
-  }
+  }else{
   res.status(400).send('Patient with specified id does not exist');
+  }
 });
 
 router.post('/', (req, res) => {
