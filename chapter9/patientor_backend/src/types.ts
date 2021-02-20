@@ -49,12 +49,16 @@ interface HospitalEntry extends BaseEntry{
         criteria: string
     };
 }
+type NewHospitalEntry = Omit<HospitalEntry, 'id'>;
+type NewHealthCheckEntry = Omit<HealthCheckEntry, 'id'>;
+type NewOccupationalHealthcareEntry = Omit<OccupationalHealthcareEntry, 'id'>;
 
 export type Entry =
   | HospitalEntry
   | OccupationalHealthcareEntry
-  | HealthCheckEntry
-  | [];
+  | HealthCheckEntry;
+
+export type NewEntry = NewHealthCheckEntry | NewHospitalEntry | NewOccupationalHealthcareEntry;
 
 export interface PatientEntry {
     id: string;

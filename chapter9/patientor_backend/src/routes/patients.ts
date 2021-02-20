@@ -3,6 +3,7 @@ const router = express.Router();
 
 import patientService from '../services/patientServices';
 import toNewPatientEntry from '../utils';
+import {toNewEntry} from '../utils';
 
 router.get('/', (_req, res) => {
     res.send(patientService.getPatientsSensored());
@@ -27,6 +28,19 @@ router.post('/', (req, res) => {
         // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
         res.status(400).send(e.message);
       }
+});
+
+router.post('/:id/entries', (req,res) => {
+  try {
+    const newEntry = toNewEntry(req.body);
+    const id = req.params.id.toString();
+    const addedEntry = patientService.addEntry(newEntry, id);
+    res.json(addedEntry);
+  }catch(e){
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+    res.status(400).send(e.message);
+  }
+
 });
 
 export default router;
