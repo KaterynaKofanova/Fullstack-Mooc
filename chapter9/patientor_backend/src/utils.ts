@@ -40,7 +40,7 @@ const parseOccupation = (entry: any): string => {
 
 const parseDate = (date: any): string => {
   if (!date || !isString(date) || !isDate(date)) {
-      throw new Error(`Incorrect or missing date of birth: ${date}`);
+      throw new Error(`Incorrect or missing date: ${date}`);
   }
   return date;
 };
@@ -104,7 +104,8 @@ const isRating = (param:any): param is HealthCheckRating => {
   return Object.values(HealthCheckRating).includes(param);
 };
 const parseHealthCheckRating = (rating: any): HealthCheckRating => {
-  if(!rating || !isRating(rating)){
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-call
+  if(!rating.toString() || !isRating(rating)){
     throw new Error(`Incorrect or missing health check rating: ${rating}`);
   }
   return rating;

@@ -1,6 +1,6 @@
 import patients from '../../data/patients';
 
-import {PatientEntry, NewPatientEntry, Entry, NewEntry} from '../types';
+import {PatientEntry, NewPatientEntry, NewEntry} from '../types';
 
 const getPatientsAll = (): Array<PatientEntry> => {
     return patients;
@@ -30,7 +30,7 @@ const addPatient = (entry:NewPatientEntry): PatientEntry =>{
     return newPatientEntry;
 };
 
-const addEntry =(entry:NewEntry, id: string): Entry =>{
+const addEntry =(entry:NewEntry, id: string): PatientEntry =>{
     const patient = getPatientById(id);
     if(patient){
         const newEntry ={
@@ -39,7 +39,7 @@ const addEntry =(entry:NewEntry, id: string): Entry =>{
         };
         const updatedPatient = {...patient, entries : patient.entries.concat(newEntry)};
         patients.map(p => p.id=== id ? updatedPatient : p);
-        return newEntry;
+        return updatedPatient;
     }else{
         throw new Error ('Patient with specified id does not exist');
     }
