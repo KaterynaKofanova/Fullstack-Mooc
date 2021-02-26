@@ -1,11 +1,12 @@
   
 import React, {useState} from 'react'
-import {EDIT_AUTHOR, ALL_AUTHORS} from '../queries'
+import {EDIT_AUTHOR, ALL_AUTHORS, ALL_BOOKS} from '../queries'
 import { useQuery, useMutation } from '@apollo/client'
 
 
 const Authors = (props) => {
   const result = useQuery(ALL_AUTHORS)
+  const books = useQuery(ALL_BOOKS)
   const [name, setName] = useState('')
   const [born, setBorn] = useState('')
 
@@ -30,10 +31,10 @@ const Authors = (props) => {
   if (!props.show) {
     return null
   }else{
-    if(result.loading){
+    if(result.loading || books.loading){
       return <div>loading...</div>
     }
-    if(result.data){
+    if(result.data && books.data){
       const authors = result.data.allAuthors
     return (
       <div>
@@ -53,12 +54,14 @@ const Authors = (props) => {
               <tr key={a.name}>
                 <td>{a.name}</td>
                 <td>{a.born}</td>
-                <td>{a.bookCount}</td>
+                <td>{books.data.allBooks.filter(b => b.author.name === a.name).length}</td>
               </tr>
             )}
           </tbody>
         </table>
-        <h3>Set birthyear</h3>
+        {props.token ? 
+        <div>
+          <h3>Set birthyear</h3>
               <form onSubmit={submit}>
                 <div>
                   name: <select
@@ -76,7 +79,7 @@ const Authors = (props) => {
                 </div>
                 <button type='submit'>update author</button>
               </form>
-  
+          </div> : null }
       </div>
     )
     }
