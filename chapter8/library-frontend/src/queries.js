@@ -85,3 +85,19 @@ export const FIND_BOOK = gql`
             }
         }
 `
+
+export const BOOK_ADDED = gql`
+        subscription{
+            bookAdded{
+                title
+                published
+                author{
+                    name
+                    born
+                    id
+                }
+                genres
+                id
+            }
+        }
+`
