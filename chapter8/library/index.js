@@ -154,6 +154,11 @@ const {PubSub} = require ('apollo-server')
 const pubsub = new PubSub()
 
 const resolvers = {
+  Author: {
+    bookCount: (root) => {
+      return root.books.length
+    }
+  },
   Query: {
       bookCount: () => Book.collection.countDocuments(),
       authorCount: () => Author.collection.countDocuments(),
@@ -173,7 +178,7 @@ const resolvers = {
             return Book.find({author: author ? author._id: null, genres: {$in: args.genre}}).populate('author')
           }
         },
-      allAuthors: () => Author.find({}),
+      allAuthors: () => Author.find({}).populate('books'),
       me: (root, args, context) => {
         return context.currentUser
       }
@@ -203,7 +208,9 @@ const resolvers = {
             genres: args.genres,
           })
           try{
-            await book.save()
+            const addedBook = await book.save()
+            author.books = author.books ? author.books.concat(addedBook._id) : [addedBook._id]
+            await author.save()
           }catch(error){
             throw new UserInputError(error.message,{
               invalidArgs: args,

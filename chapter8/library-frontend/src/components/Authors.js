@@ -1,12 +1,11 @@
   
 import React, {useState} from 'react'
-import {EDIT_AUTHOR, ALL_AUTHORS, ALL_BOOKS} from '../queries'
+import {EDIT_AUTHOR, ALL_AUTHORS} from '../queries'
 import { useQuery, useMutation } from '@apollo/client'
 
 
 const Authors = (props) => {
   const result = useQuery(ALL_AUTHORS)
-  const books = useQuery(ALL_BOOKS)
   const [name, setName] = useState('')
   const [born, setBorn] = useState('')
 
@@ -31,10 +30,10 @@ const Authors = (props) => {
   if (!props.show) {
     return null
   }else{
-    if(result.loading || books.loading){
+    if(result.loading){
       return <div>loading...</div>
     }
-    if(result.data && books.data){
+    if(result.data){
       const authors = result.data.allAuthors
     return (
       <div>
@@ -54,7 +53,7 @@ const Authors = (props) => {
               <tr key={a.name}>
                 <td>{a.name}</td>
                 <td>{a.born}</td>
-                <td>{books.data.allBooks.filter(b => b.author.name === a.name).length}</td>
+                <td>{a.bookCount}</td>
               </tr>
             )}
           </tbody>

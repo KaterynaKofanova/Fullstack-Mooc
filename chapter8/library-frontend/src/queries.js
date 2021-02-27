@@ -5,6 +5,7 @@ export const ALL_AUTHORS = gql`
         allAuthors{
             name
             born
+            bookCount
             id
         }
     }
@@ -17,6 +18,7 @@ export const ALL_BOOKS = gql`
             author{
                 name
                 born
+                bookCount
                 id
             }
             genres
@@ -37,6 +39,7 @@ export const CREATE_BOOK = gql`
             author{
                 name
                 born
+                bookCount
                 id
             },
             genres,
@@ -49,6 +52,7 @@ export const EDIT_AUTHOR = gql`
         editAuthor(name:$name, setBornTo:$setBornTo){
             name,
             born,
+            bookCount,
             id
         }
     }
@@ -78,6 +82,7 @@ export const FIND_BOOK = gql`
                 author{
                     name
                     born
+                    bookCount
                     id
                 }
                 genres
@@ -94,6 +99,7 @@ export const BOOK_ADDED = gql`
                 author{
                     name
                     born
+                    bookCount
                     id
                 }
                 genres
