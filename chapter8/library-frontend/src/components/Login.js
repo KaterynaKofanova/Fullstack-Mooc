@@ -1,4 +1,4 @@
-import { useMutation } from '@apollo/client'
+import { useMutation} from '@apollo/client'
 import React, { useState, useEffect } from 'react'
 import {LOGIN} from '../queries'
 
@@ -7,9 +7,9 @@ const Login = (props) => {
     const [password, setPassword] = useState('')
 
     const [ login,result ] = useMutation(LOGIN, {
-        onError: (error) => {
+      onError: (error) => {
           console.log(error.graphQLErrors[0].message)
-        }
+      }
     })
 
     useEffect(() => {
